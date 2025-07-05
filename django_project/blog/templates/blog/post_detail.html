@@ -1,38 +1,140 @@
 {% extends 'blog/base.html' %}
 {% block content %}
-    <div class="container">
-        <div class="post-content mt-3 border-2 border-bottom border-dark">
-            <div class="row g-3 justify-content-between">
-                <div class="col col-1">
-                    <a href="{% url 'user-posts' object.author.username %}">
-                        <img width="70" class="rounded-circle" src="{{ object.author.profile.image.url }}">
+
+<div class="container px-0 px-md-4">
+    <!-- Post Detail Card -->
+    <div class="card border-0 shadow-lg rounded-4 overflow-hidden mt-4">
+        <!-- Post Header -->
+        <div class="card-header bg-white py-3 border-0">
+            <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                    <a href="{% url 'user-posts' object.author.username %}" class="flex-shrink-0">
+                        <img width="60" height="60" class="rounded-circle object-fit-cover border border-3 border-primary" 
+                             src="{{ object.author.profile.image.url }}" alt="{{ object.author.username }}'s profile picture">
                     </a>
+                    <div class="ms-3">
+                        <a href="{% url 'user-posts' object.author.username %}" 
+                           class="text-decoration-none text-dark fw-bold mb-0">
+                            {{ object.author.username }}
+                        </a>
+                        <p class="text-muted small mb-0">
+                            {{ object.date_posted|date:"F j, Y · g:i A" }}
+                        </p>
+                    </div>
                 </div>
-                <div class="col col-7">
-                    <h3>
-                        {{ object.title }}
-                    </h3>
+                {% if object.author == user %}
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-light rounded-circle" type="button" 
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-ellipsis-h"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <a class="dropdown-item" href="{% url 'post-update' object.id %}">
+                                <i class="fas fa-edit text-primary me-2"></i>Edit Post
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item text-danger" href="{% url 'post-delete' object.id %}">
+                                <i class="fas fa-trash me-2"></i>Delete Post
+                            </a>
+                        </li>
+                    </ul>
                 </div>
-                <div class="col">
-                    <h5 class="text-end text-primary text-opacity-90">
-                        By <a href="{% url 'user-posts' object.author.username %}" class="text-decoration-none">{{ object.author }}</a>
-                        <tab>
-                        <small class="text-primary text-opacity-75">on {{ object.date_posted|date:"F d, Y" }}</small>
-                    </h5>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Post Content -->
+        <div class="card-body px-4 py-3">
+            <h1 class="display-6 fw-bold mb-3">{{ object.title }}</h1>
+            <div class="post-content fs-5 lh-base">
+                {{ object.content|linebreaks }}
+            </div>
+        </div>
+
+        <!-- Post Footer -->
+        <div class="card-footer bg-white border-0 py-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex gap-3">
+                    <button class="btn btn-sm btn-outline-secondary rounded-pill">
+                        <i class="far fa-heart me-1"></i> Like
+                    </button>
+                    <button class="btn btn-sm btn-outline-secondary rounded-pill">
+                        <i class="far fa-comment me-1"></i> Comment
+                    </button>
+                </div>
+                <div>
+                    <span class="text-muted small">
+                        <i class="far fa-eye me-1"></i> 1.2k views
+                    </span>
                 </div>
             </div>
-    
-            <div class="text-black mt-2 mb-2">
-                <h5>
-                {{ object.content }}
-            </h5>
-            </div>
-            {% if object.author == user %}
-                <div class="form-group my-1">
-                    <a href="{% url 'post-update' object.id %}" class="btn btn-outline-info mx-2">Update</a>
-                    <a href="{% url 'post-delete' object.id %}" class="btn btn-outline-danger mx-1">Delete</a>
-                </div>
-            {% endif %}
         </div>
     </div>
+
+    <!-- Comments Section -->
+    <div class="card border-0 shadow-sm rounded-4 mt-4">
+        <div class="card-header bg-white border-0 py-3">
+            <h5 class="mb-0 fw-bold">
+                <i class="fas fa-comments me-2"></i>Comments (3)
+            </h5>
+        </div>
+        <div class="card-body">
+            <!-- Comment Form -->
+            <div class="d-flex mb-4">
+                <img width="40" height="40" class="rounded-circle me-3" 
+                     src="{{ user.profile.image.url }}" alt="Your profile picture">
+                <div class="flex-grow-1">
+                    <form>
+                        <div class="input-group">
+                            <input type="text" class="form-control rounded-pill" 
+                                   placeholder="Write a comment...">
+                            <button class="btn btn-primary rounded-pill ms-2" type="submit">
+                                Post
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Comment List -->
+            <div class="d-flex mb-3">
+                <img width="40" height="40" class="rounded-circle me-3" 
+                     src="{{ object.author.profile.image.url }}" alt="Commenter profile">
+                <div class="flex-grow-1">
+                    <div class="bg-light p-3 rounded-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <a href="#" class="text-decoration-none fw-bold">username</a>
+                            <small class="text-muted">2 days ago</small>
+                        </div>
+                        <p class="mb-0">This is a sample comment on the post.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .post-content img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        margin: 1rem 0;
+    }
+    .post-content pre {
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: 8px;
+        overflow-x: auto;
+    }
+    .post-content code {
+        background: #f8f9fa;
+        padding: 0.2rem 0.4rem;
+        border-radius: 4px;
+        font-size: 0.9em;
+    }
+</style>
+
 {% endblock content %}
