@@ -7,4 +7,4 @@ services:
     startCommand: "gunicorn blog-website.wsgi:application"
     envVars:
       - key: DJANGO_SETTINGS_MODULE
-        value: blog-website.settings
+        value: django_project.settings
