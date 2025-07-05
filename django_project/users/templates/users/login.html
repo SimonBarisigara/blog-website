@@ -1,25 +1,62 @@
 {% extends 'blog/base.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
-<form method="POST">
-    {% csrf_token %}
-    <fieldset class="form-group">
-        <div class="form-group">
-            <legend class="border-bottom mb-4">Log In</legend>
-            {{ form|crispy }}
+
+<div style="max-width: 28rem; margin: 0 auto; padding: 2rem; font-family: 'Inter', system-ui, sans-serif;">
+    <!-- Login Card -->
+    <div style="background: #ffffff; border-radius: 0.5rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); padding: 2rem; border: 1px solid #e2e8f0;">
+        <!-- Header -->
+        <div style="text-align: center; margin-bottom: 1.5rem;">
+            <div style="width: 3rem; height: 3rem; background: #3b82f6; border-radius: 50%; display: inline-flex; justify-content: center; align-items: center; margin-bottom: 1rem;">
+                <svg style="width: 1.25rem; height: 1.25rem; color: white;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
+                </svg>
+            </div>
+            <h2 style="font-size: 1.25rem; font-weight: 600; color: #1e293b; margin-bottom: 0.25rem;">Welcome back</h2>
+            <p style="color: #64748b; font-size: 0.875rem;">Sign in to your account</p>
         </div>
-    </fieldset>
-    <div class="form-group">
-        <button type="submit" class="btn btn-outline-info mb-2">Login</button>
-    
-    <small class="text-muted mx-3">
-        Forgot password? <a href="{% url 'password_reset' %}" class="ml-2">Reset Password</a>
-    </small>
+
+        <!-- Login Form -->
+        <form method="POST">
+            {% csrf_token %}
+            <fieldset style="border: none; padding: 0; margin: 0;">
+                <div style="margin-bottom: 1.5rem;">
+                    {{ form|crispy }}
+                </div>
+            </fieldset>
+
+            <!-- Submit Button -->
+            <div style="margin-bottom: 1.5rem;">
+                <button type="submit" 
+                        style="width: 100%; background: #3b82f6; color: white; padding: 0.625rem; border-radius: 0.375rem; font-weight: 500; border: none; cursor: pointer; transition: background 0.2s;"
+                        onmouseover="this.style.background='#2563eb'" 
+                        onmouseout="this.style.background='#3b82f6'">
+                    Sign In
+                </button>
+            </div>
+
+            <!-- Forgot Password -->
+            <div style="text-align: center; margin-bottom: 1.5rem;">
+                <a href="{% url 'password_reset' %}" 
+                   style="color: #3b82f6; font-size: 0.875rem; font-weight: 500; text-decoration: none; transition: color 0.2s;"
+                   onmouseover="this.style.color='#2563eb'" 
+                   onmouseout="this.style.color='#3b82f6'">
+                    Forgot password?
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Sign Up Link -->
+    <div style="text-align: center; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #e2e8f0;">
+        <p style="color: #64748b; font-size: 0.875rem; margin-bottom: 0.5rem;">Don't have an account?</p>
+        <a href="{% url 'register' %}" 
+           style="display: inline-block; width: 100%; max-width: 20rem; background: #f1f5f9; color: #3b82f6; padding: 0.625rem; border-radius: 0.375rem; font-weight: 500; text-decoration: none; transition: all 0.2s;"
+           onmouseover="this.style.background='#e2e8f0'; this.style.color='#2563eb'" 
+           onmouseout="this.style.background='#f1f5f9'; this.style.color='#3b82f6'">
+            Create new account
+        </a>
+    </div>
 </div>
-</form>
-<div class="border-top pt-3">
-    <small class="text-muted">
-        Need an account? <a href="{% url 'register' %}" class="ml-2">Sign Up Now</a>
-    </small>
-</div>
+
 {% endblock content %}

@@ -1,22 +1,52 @@
 {% extends 'blog/base.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
-<form method="POST">
-    {% csrf_token %}
-    <fieldset class="form-group">
-        <div class="form-group">
-            <legend class="border-bottom mb-4">Join Today</legend>
-            {{ form|crispy }}
+
+<div style="max-width: 28rem; margin: 2rem auto; padding: 0 1rem; font-family: 'Inter', system-ui, sans-serif;">
+    <!-- Registration Card -->
+    <div style="background: #ffffff; border-radius: 0.75rem; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); padding: 2rem; border: 1px solid #e2e8f0;">
+        <!-- Header with Icon -->
+        <div style="text-align: center; margin-bottom: 1.75rem;">
+            <div style="width: 3.5rem; height: 3.5rem; background: #3b82f6; border-radius: 1rem; display: inline-flex; justify-content: center; align-items: center; margin-bottom: 1rem;">
+                <svg style="width: 1.5rem; height: 1.5rem; color: white;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+                </svg>
+            </div>
+            <h2 style="font-size: 1.5rem; font-weight: 700; color: #1e293b; margin-bottom: 0.5rem;">Join Today</h2>
+            <p style="color: #64748b; font-size: 0.9375rem;">Create your account to get started</p>
         </div>
-    </fieldset>
-    <div class="form-group">
-        <button type="submit" class="btn btn-outline-info mb-2">Sign Up</button>
+
+        <!-- Registration Form -->
+        <form method="POST">
+            {% csrf_token %}
+            <fieldset style="border: none; padding: 0; margin: 0;">
+                <div style="margin-bottom: 1.5rem;">
+                    {{ form|crispy }}
+                </div>
+            </fieldset>
+
+            <!-- Submit Button -->
+            <div style="margin: 1.75rem 0;">
+                <button type="submit" 
+                        style="width: 100%; background: #3b82f6; color: white; padding: 0.75rem; border-radius: 0.5rem; font-weight: 600; border: none; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);"
+                        onmouseover="this.style.background='#2563eb'; this.style.boxShadow='0 4px 6px -1px rgba(37, 99, 235, 0.4)'" 
+                        onmouseout="this.style.background='#3b82f6'; this.style.boxShadow='0 4px 6px -1px rgba(59, 130, 246, 0.3)'">
+                    Create Account
+                </button>
+            </div>
+        </form>
     </div>
 
-</form>
-<div class="border-top pt-3">
-    <small class="text-muted">
-        Already have an account? <a href="{% url 'login' %}" class="ml-2">Sign In</a>
-    </small>
+    <!-- Sign In Link -->
+    <div style="text-align: center; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #e2e8f0;">
+        <p style="color: #64748b; font-size: 0.9375rem; margin-bottom: 1rem;">Already have an account?</p>
+        <a href="{% url 'login' %}" 
+           style="display: inline-block; padding: 0.625rem 1.25rem; color: #3b82f6; font-weight: 500; text-decoration: none; border: 1px solid #e2e8f0; border-radius: 0.5rem; transition: all 0.2s;"
+           onmouseover="this.style.backgroundColor='#f8fafc'; this.style.color='#2563eb'" 
+           onmouseout="this.style.backgroundColor='transparent'; this.style.color='#3b82f6'">
+            Sign In
+        </a>
+    </div>
 </div>
+
 {% endblock content %}
