@@ -1,43 +1,834 @@
 {% extends 'blog/base.html' %}
 {% block content %}
-    <h1>About Page</h1>
-    <div class="siteorigin-widget-tinymce textwidget">
-        
-        When creating an "About" page for your IT blog, it's important to convey both your expertise and your personality. Here's a template and some guidelines to help you craft compelling content:
 
-       <p> 1. Introduction:
-           Start with a warm welcome and a brief overview of what readers can expect from your blog. This sets the tone for the rest of the page.
-        </p>
-        <p>
-        2. Your Background:
-           Share a bit about yourself and your experience in the IT field. Highlight any relevant education, certifications, or notable projects you've worked on. This helps establish your credibility as a trusted source of information.
-        </p>
-        <p>
-        3. Mission Statement:
-           Clearly articulate the purpose of your blog and what sets it apart from others. Are you focused on providing practical tutorials, industry news analysis, or in-depth technical insights? Let your readers know what they can gain from following your blog.
-         </p>
-         <p>
-        4. Areas of Expertise:
-           Outline the specific topics or areas within IT that you specialize in. Whether it's cybersecurity, cloud computing, programming languages, or hardware reviews, give readers an idea of the types of content they can expect to find on your blog.
-         </p>
-         <p>
-        5. Your Approach:
-           Describe your approach to creating content. Do you prioritize simplicity and clarity for beginners, or do you delve into complex technical concepts for seasoned professionals? Transparency about your writing style helps readers understand what to expect from your posts.
-        </p>
-         <p>
-        6. Community Engagement:
-           Encourage readers to engage with your blog by leaving comments, asking questions, or reaching out via social media. Building a sense of community fosters ongoing interest and discussion around your content.
-        </p>
-         <p>
-        7. Testimonials (Optional):
-           If you've received positive feedback from readers or endorsements from industry professionals, consider including these on your About page. Testimonials add social proof and reinforce your credibility.
-        </p>
-         <p>
-        8. Call to Action:**
-           End with a clear call to action, inviting readers to explore your latest posts, subscribe to your newsletter, or follow you on social media. Make it easy for them to stay connected and keep coming back for more.
-        </p>
-         <p>
-        Remember to keep your About page concise and engaging, focusing on the most relevant information for your target audience. And don't be afraid to inject some personality into your writing – letting your passion for IT shine through will help you connect with your readers on a deeper level.
-         </p>
+<style>
+  /* ===== GENERAL STYLING ===== */
+  .about-container {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  /* ===== HERO SECTION ===== */
+  .hero-section {
+    background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+    color: white;
+    padding: 5rem 2rem;
+    border-radius: 15px;
+    text-align: center;
+    margin-bottom: 4rem;
+    animation: slideDown 0.6s ease;
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .hero-section h1 {
+    font-size: 3.5rem;
+    font-weight: 900;
+    margin-bottom: 1rem;
+    letter-spacing: -1px;
+  }
+
+  .hero-section .tagline {
+    font-size: 1.3rem;
+    opacity: 0.95;
+    margin-bottom: 1.5rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-badges {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-top: 2rem;
+  }
+
+  .badge-item {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 1rem 2rem;
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+
+  .badge-number {
+    font-size: 2rem;
+    font-weight: bold;
+    display: block;
+  }
+
+  .badge-label {
+    font-size: 0.9rem;
+    opacity: 0.9;
+  }
+
+  /* ===== SECTION STYLING ===== */
+  .section {
+    margin-bottom: 4rem;
+    animation: fadeInUp 0.6s ease;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .section-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 2rem;
+    position: relative;
+    padding-bottom: 1rem;
+  }
+
+  .section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+    border-radius: 2px;
+  }
+
+  /* ===== ABOUT INTRO SECTION ===== */
+  .about-intro {
+    background: white;
+    border-radius: 12px;
+    padding: 3rem;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    margin-bottom: 2rem;
+  }
+
+  .about-intro h2 {
+    font-size: 1.8rem;
+    color: #333;
+    margin-bottom: 1.5rem;
+  }
+
+  .about-intro p {
+    color: #666;
+    font-size: 1.1rem;
+    line-height: 1.8;
+    margin-bottom: 1rem;
+  }
+
+  /* ===== VALUES SECTION ===== */
+  .values-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+  }
+
+  .value-card {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+  }
+
+  .value-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+  }
+
+  .value-icon {
+    font-size: 3rem;
+    color: #ff6b35;
+    margin-bottom: 1rem;
+  }
+
+  .value-card h3 {
+    font-size: 1.3rem;
+    color: #333;
+    margin-bottom: 0.8rem;
+  }
+
+  .value-card p {
+    color: #666;
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  /* ===== TEAM SECTION ===== */
+  .team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+  }
+
+  .team-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    animation: fadeInUp 0.6s ease;
+  }
+
+  .team-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+  }
+
+  .team-image {
+    width: 100%;
+    height: 250px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: white;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .team-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .team-image::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 107, 53, 0.3) 0%, rgba(247, 147, 30, 0.3) 100%);
+  }
+
+  .team-content {
+    padding: 1.5rem;
+    text-align: center;
+  }
+
+  .team-name {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 0.3rem;
+  }
+
+  .team-title {
+    color: #ff6b35;
+    font-weight: 600;
+    margin-bottom: 0.8rem;
+    font-size: 0.95rem;
+  }
+
+  .team-bio {
+    color: #666;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+  }
+
+  .team-social {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  .social-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: #f0f0f0;
+    color: #ff6b35;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+
+  .social-link:hover {
+    background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+    color: white;
+    transform: scale(1.1);
+  }
+
+  /* ===== STATS SECTION ===== */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+
+  .stat-card {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+  }
+
+  .stat-card:hover {
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+  }
+
+  .stat-number {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #ff6b35;
+    margin-bottom: 0.5rem;
+  }
+
+  .stat-label {
+    color: #666;
+    font-size: 1rem;
+  }
+
+  /* ===== TIMELINE SECTION ===== */
+  .timeline {
+    position: relative;
+    padding: 2rem 0;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(to bottom, #ff6b35, #f7931e);
+  }
+
+  .timeline-item {
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeInUp 0.6s ease forwards;
+  }
+
+  .timeline-item:nth-child(1) { animation-delay: 0.1s; }
+  .timeline-item:nth-child(2) { animation-delay: 0.2s; }
+  .timeline-item:nth-child(3) { animation-delay: 0.3s; }
+  .timeline-item:nth-child(4) { animation-delay: 0.4s; }
+
+  .timeline-item:nth-child(odd) {
+    margin-left: 0;
+    text-align: right;
+    padding-right: 52%;
+  }
+
+  .timeline-item:nth-child(even) {
+    margin-left: 52%;
+    padding-left: 3rem;
+  }
+
+  .timeline-dot {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 20px;
+    background: white;
+    border: 4px solid #ff6b35;
+    border-radius: 50%;
+    top: 20px;
+  }
+
+  .timeline-content {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+  }
+
+  .timeline-year {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #ff6b35;
+    margin-bottom: 0.3rem;
+  }
+
+  .timeline-title {
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+  }
+
+  .timeline-description {
+    color: #666;
+    font-size: 0.9rem;
+  }
+
+  /* ===== APPROACH SECTION ===== */
+  .approach-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+  }
+
+  .approach-card {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    border-left: 5px solid #ff6b35;
+  }
+
+  .approach-card:hover {
+    transform: translateX(10px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+  }
+
+  .approach-number {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #ff6b35;
+    margin-bottom: 1rem;
+  }
+
+  .approach-card h3 {
+    font-size: 1.2rem;
+    color: #333;
+    margin-bottom: 0.8rem;
+  }
+
+  .approach-card p {
+    color: #666;
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  /* ===== TESTIMONIALS ===== */
+  .testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+  }
+
+  .testimonial-card {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    border-top: 4px solid #ff6b35;
+  }
+
+  .testimonial-card:hover {
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+  }
+
+  .testimonial-stars {
+    color: #ff6b35;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+  }
+
+  .testimonial-text {
+    color: #666;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    font-style: italic;
+  }
+
+  .testimonial-author {
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 0.2rem;
+  }
+
+  .testimonial-role {
+    color: #999;
+    font-size: 0.9rem;
+  }
+
+  /* ===== CTA SECTION ===== */
+  .cta-section {
+    background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+    color: white;
+    border-radius: 15px;
+    padding: 4rem 2rem;
+    text-align: center;
+    margin-top: 4rem;
+  }
+
+  .cta-section h2 {
+    font-size: 2.2rem;
+    margin-bottom: 1rem;
+  }
+
+  .cta-section p {
+    font-size: 1.1rem;
+    opacity: 0.95;
+    margin-bottom: 2rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .cta-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .cta-btn {
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .cta-btn-primary {
+    background: white;
+    color: #ff6b35;
+  }
+
+  .cta-btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  }
+
+  .cta-btn-secondary {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 2px solid white;
+  }
+
+  .cta-btn-secondary:hover {
+    background: white;
+    color: #ff6b35;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    .hero-section {
+      padding: 3rem 1.5rem;
+    }
+
+    .hero-section h1 {
+      font-size: 2rem;
+    }
+
+    .hero-section .tagline {
+      font-size: 1rem;
+    }
+
+    .section-title {
+      font-size: 1.8rem;
+    }
+
+    .about-intro {
+      padding: 1.5rem;
+    }
+
+    .about-intro p {
+      font-size: 0.95rem;
+    }
+
+    .timeline::before {
+      left: 20px;
+    }
+
+    .timeline-item:nth-child(odd),
+    .timeline-item:nth-child(even) {
+      margin-left: 50px;
+      padding-right: 0;
+      padding-left: 1rem;
+      text-align: left;
+    }
+
+    .timeline-dot {
+      left: 20px;
+    }
+
+    .hero-badges {
+      gap: 1rem;
+    }
+
+    .badge-item {
+      padding: 0.8rem 1.5rem;
+      font-size: 0.9rem;
+    }
+
+    .cta-buttons {
+      flex-direction: column;
+    }
+
+    .cta-btn {
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .hero-section {
+      padding: 2rem 1rem;
+    }
+
+    .hero-section h1 {
+      font-size: 1.5rem;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+    }
+
+    .about-intro {
+      padding: 1rem;
+    }
+
+    .hero-badges {
+      flex-direction: column;
+    }
+
+    .badge-item {
+      width: 100%;
+    }
+
+    .cta-section {
+      padding: 2rem 1rem;
+    }
+
+    .cta-section h2 {
+      font-size: 1.5rem;
+    }
+  }
+</style>
+
+<div class="about-container">
+  <!-- Hero Section -->
+  <div class="hero-section">
+    <h1>TechNews</h1>
+    <p class="tagline">Your trusted source for technology news, insights, and industry trends</p>
+    <div class="hero-badges">
+      <div class="badge-item">
+        <span class="badge-number">2.5M+</span>
+        <span class="badge-label">Monthly Readers</span>
+      </div>
+      <div class="badge-item">
+        <span class="badge-number">5K+</span>
+        <span class="badge-label">Articles Published</span>
+      </div>
+      <div class="badge-item">
+        <span class="badge-number">12</span>
+        <span class="badge-label">Years Active</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- About Introduction -->
+  <div class="section">
+    <div class="about-intro">
+      <h2>Our Story</h2>
+      <p>TechNews was founded in 2012 with a simple mission: to democratize access to quality technology journalism. What started as a passion project by a small group of tech enthusiasts has grown into a leading source of tech news and insights, serving millions of readers worldwide.</p>
+      <p>We believe that technology shapes our world, and everyone deserves access to clear, accurate, and insightful reporting on the issues that matter most. Today, our team of dedicated journalists and editors work tirelessly to bring you the stories that drive innovation, challenge the status quo, and inspire the next generation of tech leaders.</p>
+    </div>
+  </div>
+
+  <!-- Core Values -->
+  <div class="section">
+    <h2 class="section-title">Our Core Values</h2>
+    <div class="values-grid">
+      <div class="value-card">
+        <div class="value-icon">
+          <i class="fas fa-compass"></i>
         </div>
+        <h3>Integrity</h3>
+        <p>We maintain the highest editorial standards and are committed to factual, unbiased reporting.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">
+          <i class="fas fa-users"></i>
+        </div>
+        <h3>Community</h3>
+        <p>We foster meaningful conversations and build relationships with our readers and sources.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">
+          <i class="fas fa-lightbulb"></i>
+        </div>
+        <h3>Innovation</h3>
+        <p>We stay ahead of the curve, exploring new formats and technologies to deliver news better.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">
+          <i class="fas fa-shield-alt"></i>
+        </div>
+        <h3>Transparency</h3>
+        <p>We're open about our sources, methods, and any conflicts of interest in our reporting.</p>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- Our Approach -->
+  <div class="section">
+    <h2 class="section-title">Our Editorial Approach</h2>
+    <div class="approach-grid">
+      <div class="approach-card">
+        <div class="approach-number">1</div>
+        <h3>Rigorous Research</h3>
+        <p>Every story starts with thorough research and fact-checking. We interview primary sources and verify information before publishing.</p>
+      </div>
+      <div class="approach-card">
+        <div class="approach-number">2</div>
+        <h3>Expert Analysis</h3>
+        <p>Our writers bring deep expertise in their coverage areas. We provide context and analysis to help you understand the implications.</p>
+      </div>
+      <div class="approach-card">
+        <div class="approach-number">3</div>
+        <h3>Clarity First</h3>
+        <p>We translate complex tech concepts into clear, accessible language without sacrificing accuracy or depth.</p>
+      </div>
+      <div class="approach-card">
+        <div class="approach-number">4</div>
+        <h3>Continuous Updates</h3>
+        <p>We keep our stories current, updating them as new information emerges and situations develop.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Timeline -->
+  <div class="section">
+    <h2 class="section-title">Our Journey</h2>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <div class="timeline-year">2024</div>
+          <div class="timeline-title">TechNews Launched</div>
+          <div class="timeline-description">TechNews was founded by two passionate full-stack developers with a vision to create a modern platform for technology journalism.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Team Section -->
+  <div class="section">
+    <h2 class="section-title">Meet Our Team</h2>
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="team-image">
+          <i class="fas fa-user-circle"></i>
+        </div>
+        <div class="team-content">
+          <div class="team-name">Barisigara Simon</div>
+          <div class="team-title">Founder & Full-Stack Developer</div>
+          <p class="team-bio">Full-stack developer with expertise in web technologies and backend systems. Passionate about building scalable tech solutions and quality journalism.</p>
+          <div class="team-social">
+            <a href="#" class="social-link" title="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="social-link" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+            <a href="#" class="social-link" title="Email"><i class="fas fa-envelope"></i></a>
+          </div>
+        </div>
+      </div>
+
+      <div class="team-card">
+        <div class="team-image">
+          <i class="fas fa-user-circle"></i>
+        </div>
+        <div class="team-content">
+          <div class="team-name">Asiingwire Eric Hanington</div>
+          <div class="team-title">Co-Founder & Full-Stack Developer</div>
+          <p class="team-bio">Full-stack developer with expertise in both frontend and backend technologies. Dedicated to creating innovative digital solutions and delivering exceptional user experiences.</p>
+          <div class="team-social">
+            <a href="#" class="social-link" title="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="social-link" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+            <a href="#" class="social-link" title="Email"><i class="fas fa-envelope"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Testimonials -->
+  <div class="section">
+    <h2 class="section-title">What Our Readers Say</h2>
+    <div class="testimonials-grid">
+      <div class="testimonial-card">
+        <div class="testimonial-stars">
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+        </div>
+        <p class="testimonial-text">"TechNews is my go-to source for tech updates. Their analysis is always thorough and they explain complex topics beautifully."</p>
+        <div class="testimonial-author">Anonymous Reader</div>
+        <div class="testimonial-role">Tech Enthusiast</div>
+      </div>
+
+      <div class="testimonial-card">
+        <div class="testimonial-stars">
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+        </div>
+        <p class="testimonial-text">"The level of journalism here is exceptional. They break stories other outlets miss and their investigations are incredibly well-researched."</p>
+        <div class="testimonial-author">Anonymous Reader</div>
+        <div class="testimonial-role">Industry Professional</div>
+      </div>
+
+      <div class="testimonial-card">
+        <div class="testimonial-stars">
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+        </div>
+        <p class="testimonial-text">"I've been reading TechNews for a while now. The editorial team truly cares about accuracy and providing value to their audience."</p>
+        <div class="testimonial-author">Anonymous Reader</div>
+        <div class="testimonial-role">Regular Reader</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA Section -->
+  <div class="cta-section">
+    <h2>Stay Updated With TechNews</h2>
+    <p>Join millions of readers who trust us for the latest tech news, insights, and analysis.</p>
+    <div class="cta-buttons">
+      <a href="#" class="cta-btn cta-btn-primary">
+        <i class="fas fa-envelope me-2"></i>Subscribe to Newsletter
+      </a>
+      <a href="#" class="cta-btn cta-btn-secondary">
+        <i class="fas fa-envelope-open me-2"></i>Contact Us
+      </a>
+    </div>
+  </div>
+</div>
+
 {% endblock content %}

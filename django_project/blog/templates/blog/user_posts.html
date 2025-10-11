@@ -1,50 +1,822 @@
 {% extends 'blog/base.html' %}
 {% block content %}
-<h1 class="mb-3">Post by {{ view.kwargs.username }}({{ page_obj.paginator.count }})</h1>
-    {% for post in posts %}
-    <div class="container">
-        <div class="post-content mt-3 border-2 border-bottom border-dark">
-            <div class="row g-3 justify-content-between">
-                <div class="col col-1">
-                    <a href="#"><img width="70" class="rounded-circle" src="{{ post.author.profile.image.url }}"></a>
-                </div>
-                <div class="col col-7">
-                    <h3>
-                        <a class="text-decoration-none" href="{% url 'post-detail' post.id %}">{{ post.title }}</a>
-                    </h3>
-                </div>
-                <div class="col">
-                    <h5 class="text-end text-primary text-opacity-90">
-                        <small class="text-primary text-opacity-75">on {{ post.date_posted|date:"F d, Y" }}</small>
-                    </h5>
-                </div>
-            </div>
-    
-            <div class="text-black mt-2 mb-2">
-                <h5>
-                {{ post.content }}
-            </h5>
-            </div>
+
+<style>
+  /* ===== GENERAL STYLING ===== */
+  .user-posts-container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* ===== PROFILE HEADER ===== */
+  .profile-header {
+    background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+    color: white;
+    padding: 3rem 2rem;
+    border-radius: 15px;
+    margin-bottom: 3rem;
+    position: relative;
+    overflow: hidden;
+    animation: slideDown 0.6s ease;
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .profile-content {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .profile-avatar {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 5px solid white;
+    object-fit: cover;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  }
+
+  .profile-info {
+    flex: 1;
+  }
+
+  .profile-username {
+    font-size: 2.2rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+
+  .profile-bio {
+    font-size: 1.1rem;
+    opacity: 0.95;
+    margin-bottom: 1.5rem;
+  }
+
+  .profile-stats {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .stat-number {
+    font-size: 1.8rem;
+    font-weight: bold;
+  }
+
+  .stat-label {
+    font-size: 0.9rem;
+    opacity: 0.9;
+  }
+
+  .profile-actions {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .profile-btn {
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .profile-btn-primary {
+    background: white;
+    color: #ff6b35;
+  }
+
+  .profile-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  }
+
+  .profile-btn-secondary {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 2px solid white;
+  }
+
+  .profile-btn-secondary:hover {
+    background: white;
+    color: #ff6b35;
+  }
+
+  .social-links {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .social-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+
+  .social-link:hover {
+    background: white;
+    color: #ff6b35;
+    transform: scale(1.1);
+  }
+
+  /* ===== FILTER & SORT SECTION ===== */
+  .controls-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .section-title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #333;
+    margin: 0;
+  }
+
+  .controls {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .filter-select, .sort-select {
+    padding: 0.8rem 1rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: white;
+  }
+
+  .filter-select:hover, .sort-select:hover,
+  .filter-select:focus, .sort-select:focus {
+    outline: none;
+    border-color: #ff6b35;
+    box-shadow: 0 0 10px rgba(255, 107, 53, 0.2);
+  }
+
+  /* ===== FEATURED POST ===== */
+  .featured-post-section {
+    margin-bottom: 3rem;
+  }
+
+  .featured-post {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    display: flex;
+    height: 300px;
+    animation: fadeInUp 0.6s ease;
+  }
+
+  .featured-image {
+    width: 40%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    object-fit: cover;
+  }
+
+  .featured-content {
+    width: 60%;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .featured-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 25px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    margin-bottom: 0.8rem;
+    width: fit-content;
+  }
+
+  .featured-title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 1rem;
+    line-height: 1.3;
+  }
+
+  .featured-excerpt {
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+  }
+
+  .featured-meta {
+    display: flex;
+    gap: 1.5rem;
+    color: #999;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+  }
+
+  .featured-btn {
+    background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: fit-content;
+    transition: all 0.3s ease;
+  }
+
+  .featured-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(255, 107, 53, 0.3);
+  }
+
+  /* ===== POSTS GRID ===== */
+  .posts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+  }
+
+  .post-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    animation: fadeInUp 0.6s ease;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .post-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+  }
+
+  .post-image-container {
+    width: 100%;
+    height: 200px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .post-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .post-card:hover .post-image {
+    transform: scale(1.05);
+  }
+
+  .post-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 107, 53, 0.3) 0%, rgba(247, 147, 30, 0.3) 100%);
+    display: flex;
+    align-items: flex-end;
+    padding: 1rem;
+  }
+
+  .post-category {
+    background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+    color: white;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: bold;
+  }
+
+  .post-reading-time {
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: bold;
+    margin-left: 0.5rem;
+  }
+
+  .post-content {
+    padding: 1.5rem;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .post-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 0.8rem;
+    line-height: 1.4;
+    transition: color 0.3s ease;
+  }
+
+  .post-card:hover .post-title {
+    color: #ff6b35;
+  }
+
+  .post-excerpt {
+    color: #666;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+    flex-grow: 1;
+  }
+
+  .post-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+  }
+
+  .post-date {
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+  .post-engagement {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .engagement-stat {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    color: #666;
+    font-size: 0.85rem;
+  }
+
+  .engagement-stat i {
+    color: #ff6b35;
+  }
+
+  .read-more-link {
+    color: #ff6b35;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  .read-more-link:hover {
+    gap: 0.6rem;
+  }
+
+  /* ===== EMPTY STATE ===== */
+  .empty-state {
+    background: white;
+    border-radius: 12px;
+    padding: 3rem;
+    text-align: center;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    animation: fadeInUp 0.6s ease;
+  }
+
+  .empty-state-icon {
+    font-size: 4rem;
+    color: #ddd;
+    margin-bottom: 1rem;
+  }
+
+  .empty-state-title {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+  }
+
+  .empty-state-text {
+    color: #999;
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .empty-state-btn {
+    background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+    color: white;
+    border: none;
+    padding: 0.8rem 2rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s ease;
+  }
+
+  .empty-state-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(255, 107, 53, 0.3);
+  }
+
+  /* ===== PAGINATION ===== */
+  .pagination-section {
+    display: flex;
+    justify-content: center;
+    gap: 0.8rem;
+    margin-top: 3rem;
+    flex-wrap: wrap;
+  }
+
+  .pagination-info {
+    text-align: center;
+    color: #666;
+    font-size: 0.95rem;
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+
+  .pagination-btn {
+    padding: 0.8rem 1.2rem;
+    border: 2px solid #e0e0e0;
+    background: white;
+    color: #333;
+    border-radius: 8px;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .pagination-btn:hover {
+    border-color: #ff6b35;
+    color: #ff6b35;
+  }
+
+  .pagination-btn.active {
+    background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+    color: white;
+    border-color: #ff6b35;
+  }
+
+  .pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    .profile-header {
+      padding: 2rem 1.5rem;
+    }
+
+    .profile-content {
+      flex-direction: column;
+      text-align: center;
+      gap: 1.5rem;
+    }
+
+    .profile-avatar {
+      width: 120px;
+      height: 120px;
+    }
+
+    .profile-username {
+      font-size: 1.8rem;
+    }
+
+    .profile-stats {
+      justify-content: center;
+      gap: 1.5rem;
+    }
+
+    .profile-actions {
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .social-links {
+      justify-content: center;
+    }
+
+    .featured-post {
+      height: auto;
+      flex-direction: column;
+    }
+
+    .featured-image {
+      width: 100%;
+      height: 200px;
+    }
+
+    .featured-content {
+      width: 100%;
+    }
+
+    .posts-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .controls-section {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .controls {
+      width: 100%;
+    }
+
+    .filter-select, .sort-select {
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .profile-header {
+      padding: 1.5rem 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .profile-avatar {
+      width: 100px;
+      height: 100px;
+    }
+
+    .profile-username {
+      font-size: 1.5rem;
+    }
+
+    .profile-stats {
+      gap: 1rem;
+    }
+
+    .featured-title {
+      font-size: 1.3rem;
+    }
+
+    .post-title {
+      font-size: 1rem;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+    }
+
+    .profile-actions {
+      width: 100%;
+    }
+
+    .profile-btn {
+      flex: 1;
+    }
+  }
+</style>
+
+<div class="user-posts-container">
+  <!-- Profile Header -->
+  <div class="profile-header">
+    <div class="profile-content">
+      <img src="{{ post.author.profile.image.url }}" alt="{{ view.kwargs.username }}" class="profile-avatar">
+      <div class="profile-info">
+        <h1 class="profile-username">{{ view.kwargs.username|title }}</h1>
+        <p class="profile-bio">Passionate about technology, innovation, and sharing insights with the community.</p>
+        
+        <div class="profile-stats">
+          <div class="stat">
+            <div class="stat-number">{{ page_obj.paginator.count }}</div>
+            <div class="stat-label">Posts</div>
+          </div>
+          <div class="stat">
+            <div class="stat-number">2.5K</div>
+            <div class="stat-label">Followers</div>
+          </div>
+          <div class="stat">
+            <div class="stat-number">48.2K</div>
+            <div class="stat-label">Reads</div>
+          </div>
         </div>
+
+        <div class="profile-actions">
+          <a href="#" class="profile-btn profile-btn-primary">
+            <i class="fas fa-user-plus"></i>Follow
+          </a>
+          <a href="#" class="profile-btn profile-btn-secondary">
+            <i class="fas fa-envelope"></i>Message
+          </a>
+        </div>
+
+        <div class="social-links">
+          <a href="#" class="social-link" title="Twitter"><i class="fab fa-twitter"></i></a>
+          <a href="#" class="social-link" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+          <a href="#" class="social-link" title="GitHub"><i class="fab fa-github"></i></a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Featured Post Section -->
+  {% if posts %}
+  {% with featured=posts.0 %}
+  <div class="featured-post-section">
+    <div class="featured-post">
+      <img src="{{ featured.author.profile.image.url }}" alt="Featured" class="featured-image">
+      <div class="featured-content">
+        <span class="featured-badge">
+          <i class="fas fa-star me-1"></i>LATEST POST
+        </span>
+        <h2 class="featured-title">{{ featured.title }}</h2>
+        <div class="featured-meta">
+          <span>
+            <i class="fas fa-calendar me-1"></i>{{ featured.date_posted|date:"M j, Y" }}
+          </span>
+          <span>
+            <i class="fas fa-clock me-1"></i>5 min read
+          </span>
+          <span>
+            <i class="fas fa-eye me-1"></i>1.2K views
+          </span>
+        </div>
+        <p class="featured-excerpt">{{ featured.content|truncatechars:180 }}</p>
+        <a href="{% url 'post-detail' featured.id %}" class="featured-btn">
+          Read Full Post <i class="fas fa-arrow-right"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+  {% endwith %}
+  {% endif %}
+
+  <!-- Filter & Sort Controls -->
+  <div class="controls-section">
+    <h2 class="section-title">All Posts</h2>
+    <div class="controls">
+      <select class="filter-select">
+        <option>All Categories</option>
+        <option>Technology</option>
+        <option>Business</option>
+        <option>Lifestyle</option>
+      </select>
+      <select class="sort-select">
+        <option>Sort: Newest</option>
+        <option>Sort: Oldest</option>
+        <option>Sort: Most Read</option>
+        <option>Sort: Trending</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Posts Grid -->
+  {% if posts %}
+  <div class="posts-grid">
+    {% for post in posts %}
+    <div class="post-card">
+      <div class="post-image-container">
+        <img src="{{ post.author.profile.image.url }}" alt="{{ post.title }}" class="post-image">
+        <div class="post-overlay">
+          <span class="post-category">TECH</span>
+          <span class="post-reading-time"><i class="fas fa-book-open me-1"></i>4 min</span>
+        </div>
+      </div>
+      <div class="post-content">
+        <h3 class="post-title">{{ post.title }}</h3>
+        <p class="post-excerpt">{{ post.content|truncatechars:150 }}</p>
+        <div class="post-footer">
+          <span class="post-date">{{ post.date_posted|date:"M j, Y" }}</span>
+          <div class="post-engagement">
+            <div class="engagement-stat">
+              <i class="fas fa-comment"></i>
+              <span>12</span>
+            </div>
+            <div class="engagement-stat">
+              <i class="fas fa-heart"></i>
+              <span>24</span>
+            </div>
+            <div class="engagement-stat">
+              <i class="fas fa-eye"></i>
+              <span>156</span>
+            </div>
+          </div>
+        </div>
+        <a href="{% url 'post-detail' post.id %}" class="read-more-link" style="margin-top: 1rem;">
+          Read More <i class="fas fa-arrow-right"></i>
+        </a>
+      </div>
     </div>
     {% endfor %}
-    <div class="mt-3">
-        {% if is_paginated %}
-            {% if page_obj.has_previous %}
-            <a href="?page=1" class="btn btn-outline-info">First</a>
-            <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-outline-info">Prev.</a>
-            {% endif %}
-            {% for num in page_obj.paginator.page_range %}
-                {% if page_obj.number == num %}
-                    <a href="?page={{ num }}" class="btn btn-info">{{ num }}</a>
-                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-                    <a href="?page={{ num }}" class="btn btn-outline-info">{{ num }}</a>
-                {% endif %}
-            {% endfor %}
-            {% if page_obj.has_next %}
-            <a href="?page={{ page_obj.next_page_number }}" class="btn btn-outline-info">Next</a>
-            <a href="?page={{ page_obj.paginator.num_pages }}" class="btn btn-outline-info">Last</a>
-            {% endif %}
-        {% endif %}
+  </div>
+
+  <!-- Pagination -->
+  {% if is_paginated %}
+  <div class="pagination-section">
+    <div class="pagination-info">
+      Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
     </div>
+    
+    {% if page_obj.has_previous %}
+    <a href="?page=1" class="pagination-btn">
+      <i class="fas fa-chevron-left"></i> First
+    </a>
+    <a href="?page={{ page_obj.previous_page_number }}" class="pagination-btn">
+      <i class="fas fa-chevron-left"></i> Previous
+    </a>
+    {% endif %}
+
+    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+      {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+        <a class="pagination-btn active">{{ num }}</a>
+        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+        <a href="?page={{ num }}" class="pagination-btn">{{ num }}</a>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}" class="pagination-btn">
+      Next <i class="fas fa-chevron-right"></i>
+    </a>
+    <a href="?page={{ page_obj.paginator.num_pages }}" class="pagination-btn">
+      Last <i class="fas fa-chevron-right"></i>
+    </a>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  {% else %}
+  <!-- Empty State -->
+  <div class="empty-state">
+    <div class="empty-state-icon">
+      <i class="fas fa-inbox"></i>
+    </div>
+    <h3 class="empty-state-title">No Posts Yet</h3>
+    <p class="empty-state-text">This user hasn't published any posts yet. Check back soon!</p>
+    <a href="{% url 'blog-home' %}" class="empty-state-btn">
+      <i class="fas fa-arrow-left me-1"></i>Back to Home
+    </a>
+  </div>
+  {% endif %}
+</div>
+
 {% endblock content %}
