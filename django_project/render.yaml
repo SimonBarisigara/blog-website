@@ -9,4 +9,5 @@ services:
     startCommand: gunicorn django_project.django_project.wsgi:application
     envVars:
       - key: DJANGO_SETTINGS_MODULE
-        value: django_project.settings
+        value: django_project.django_project.settings
+        
