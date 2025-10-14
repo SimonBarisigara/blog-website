@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: blog-website
+    runtime: python
+    plan: free
+    buildCommand: |
+      pip install -r requirements.txt
+      python manage.py collectstatic --noinput
+    startCommand: gunicorn django_project.wsgi:application
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: django_project.settings
