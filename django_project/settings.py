@@ -32,8 +32,8 @@ ALLOWED_HOSTS = ['https://blog-website-troe.onrender.com', 'localhost', '127.0.0
 # Application definition
 
 INSTALLED_APPS = [
-    'users.apps.UsersConfig',
-    'blog.apps.BlogConfig',
+    'django_project.users.apps.UsersConfig',
+    'django_project.blog.apps.BlogConfig',
     'crispy_forms',
     "crispy_bootstrap5",
     'django_extensions',
