@@ -1,16 +1,85 @@
 {% extends 'blog/base.html' %}
 
 {% block content %}
-<form method="POST">
-    {% csrf_token %}
-    <fieldset class="form-group">
-        <div class="form-group">
-        <h2 class="text-center mt-5">Are you want to DELETE {{ object.title }}?</h2>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-lg border-0">
+                <div class="card-body p-5 text-center">
+                    <!-- Warning Icon -->
+                    <div class="mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#dc3545" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                    </div>
+
+                    <!-- Heading -->
+                    <h2 class="fw-bold mb-3">Delete Post</h2>
+                    
+                    <!-- Post Title Display -->
+                    <div class="alert alert-light border mb-4">
+                        <p class="mb-1 text-muted small">You are about to delete:</p>
+                        <h5 class="mb-0 fw-semibold">{{ object.title }}</h5>
+                    </div>
+
+                    <!-- Warning Message -->
+                    <p class="text-muted mb-4">
+                        This action cannot be undone. The post will be permanently removed from the database.
+                    </p>
+
+                    <!-- Form -->
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                            <a href="{% url 'post-detail' object.id %}" class="btn btn-outline-secondary btn-lg px-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1" style="margin-bottom: 2px;">
+                                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                                    <polyline points="12 19 5 12 12 5"></polyline>
+                                </svg>
+                                Cancel
+                            </a>
+                            <button type="submit" class="btn btn-danger btn-lg px-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1" style="margin-bottom: 2px;">
+                                    <polyline points="3 6 5 6 21 6"></polyline>
+                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                    <line x1="10" y1="11" x2="10" y2="17"></line>
+                                    <line x1="14" y1="11" x2="14" y2="17"></line>
+                                </svg>
+                                Delete Permanently
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-    </fieldset>
-    <div class="form-group text-center mt-5">
-        <button type="submit" class="btn btn-outline-danger mx-1">Yes, Delete</button>
-        <a href="{% url 'post-detail' object.id %}" class="btn btn-outline-secondary mx-2">Cancel</a>
     </div>
-</form>
+</div>
+
+<style>
+.card {
+    border-radius: 1rem;
+    transition: transform 0.2s ease;
+}
+
+.btn {
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-danger:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+}
+
+.btn-outline-secondary:hover {
+    transform: translateY(-2px);
+}
+
+.alert-light {
+    border-radius: 0.5rem;
+}
+</style>
 {% endblock content %}
