@@ -26,7 +26,10 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'True'
 
 
-ALLOWED_HOSTS = ['https://blog-website-troe.onrender.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['ugblog-qfzg.onrender.com', 'localhost', '127.0.0.1']
+# allow Render dynamic host
+if 'RENDER_EXTERNAL_HOSTNAME' in os.environ:
+    ALLOWED_HOSTS.append(os.environ['RENDER_EXTERNAL_HOSTNAME'])
 
 
 # Application definition
