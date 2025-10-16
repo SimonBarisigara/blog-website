@@ -22,11 +22,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
-DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'True'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-dev-key-change-this-in-production-12345')
+DEBUG = True  # Set to True for development
 
 
-ALLOWED_HOSTS = ['ugblog-qfzg.onrender.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['ugblog-qfzg.onrender.com', 'localhost', '127.0.0.1', '*']
 # allow Render dynamic host
 if 'RENDER_EXTERNAL_HOSTNAME' in os.environ:
     ALLOWED_HOSTS.append(os.environ['RENDER_EXTERNAL_HOSTNAME'])
@@ -51,12 +51,12 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
@@ -85,14 +85,8 @@ WSGI_APPLICATION = 'django_project.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-DATABASES = {
     'default': dj_database_url.config(
-        default=f'sqlite:///{os.path.join(BASE_DIR, "db.sqlite3")}',
+        default=f'sqlite:///{os.path.join(BASE_DIR, "django_project", "db.sqlite3")}',
         conn_max_age=600
     )
 }
@@ -129,10 +123,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media') 
-MEDIA_URL = 'media/'
+# Media files
+MEDIA_ROOT = os.path.join(BASE_DIR, 'django_project', 'photos') 
+MEDIA_URL = '/media/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -145,12 +141,13 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 LOGIN_REDIRECT_URL = 'blog-home'
 LOGIN_URL = 'login'
 
+# Email configuration
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+
+# WhiteNoise static files
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')

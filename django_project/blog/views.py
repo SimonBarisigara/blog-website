@@ -9,9 +9,8 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.utils import timezone
 from datetime import timedelta
-from blog.models import Post, Category, Tag, Comment, Like, Newsletter, Bookmark, Follow
-from blog.forms import PostForm, CommentForm, NewsletterForm
-
+from .models import Post, Category, Tag, Comment, Like, Newsletter, Bookmark, Follow
+from .forms import PostForm, CommentForm, NewsletterForm
 # ========== HOME & LIST VIEWS ==========
 
 class PostListView(ListView):

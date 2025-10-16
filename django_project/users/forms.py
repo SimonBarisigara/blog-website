@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from users.models import Profile  # This is correct - Profile is in users app
+from .models import Profile  # This is correct - Profile is in users app
 # Remove any import of Post from here
 
 class UserRegisterForm(UserCreationForm):
